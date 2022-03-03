@@ -1,43 +1,46 @@
 $white: #fff;
 $black: #000;
-$highlight: #ab3334;
+$highlight: #575793;
+$creme: #faf6e9;
+$brown: #c36c0c;
+$dark-blue: darken($highlight, 10%);
+$light-grey: #E7E7EB;
 
-// @import 'varela-round';
-// @import 'playfair-display';
-$font-stack: 'Nunito', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-$header-font-stack: 'tondo', 'VarelaRound', 'Arial', sans-serif;
+/* #region Font Definitions */
+@import 'trajan-pro';
+@import 'league-spartan';
+@import 'dynalight';
+$font-stack: 'League Spartan', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$header-font-stack: 'Trajan Pro', 'Times New Roman', 'Times', 'Georgia', serif;
+$fancy-font-stack: 'Dynalight', 'Snell Roundhand', 'Freestyle Script', cursive;
+/* #endregion */
 
+/* #region Flex-Designs */
 @mixin centerflex($flow: row, $wrap: nowrap, $juscon: center, $aitems: center) {
 	display: flex;
 	justify-content: $juscon;
 	align-items: $aitems;
 	flex-flow: $flow $wrap;
 }
-/* Responsive Font Sizes */
-$breakpoints: (
-	large : 980px,
-	medium: 767px, // Previously 640px
-	between: 600px,
-	small : 479px,
-	verysmall: 400px
-);
-@mixin font-size($fs-map, $fs-breakpoints: $breakpoints) {
-	@each $fs-breakpoint, $fs-font-size in $fs-map {
-		@if $fs-breakpoint == null {
-			font-size: $fs-font-size;
-		}
-		@else {
-			// If $fs-font-size is a key that exists in
-			// $fs-breakpoints, use the value
-			@if map-has-key($fs-breakpoints, $fs-breakpoint) {
-				$fs-breakpoint: map-get($fs-breakpoints, $fs-breakpoint);
-			}
-			@media screen and (max-width: $fs-breakpoint) {
-				font-size: $fs-font-size;
-			}
+/* Centered Text / Img on one side, text on other */
+%centered-text {
+	display: flex;
+	.et_pb_column {
+		display: flex; 
+		flex-flow: column nowrap;
+		float: none;
+		justify-content: center;
+		.et_pb_module {
+			margin: 0 auto 30px;
+			max-width: 550px;
+			width: 70%;
+			&:first-child { margin-top: 90px; }
+			&:last-child { margin-bottom: 90px; }
 		}
 	}
 }
+/* #endregion */
+/* #region Placeholder Mixin */
 @mixin placeholder ($color: #333, $opacity: 0.8) {
 	&::-webkit-input-placeholder { // Chrome/Opera/Safari
 		color: $color;
@@ -56,10 +59,11 @@ $breakpoints: (
 		opacity: $opacity;
 	}
 }
+/* #endregion */
+/* #region Forms & Selects */
 %magic_select {
 	position: relative;
-	border: 1px solid $black;
-	border-radius: 4px;
+	background: $white;
 	&::before {
 		color: $black;
 		content: "C";
@@ -71,33 +75,40 @@ $breakpoints: (
 		z-index: 10;
 	}
 	select {
+		-webkit-appearance: none;
 		appearance: none;
 		border: none;
 		cursor: pointer;
+		font-size: 1rem;
 		outline: none;
+		padding: .75rem .5rem;
 		position: relative;
+		width: 100%;
 	}
 }
-/* Pretty ACF Forms */
+/* #region Pretty ACF Forms */
 %pretty-input {
-	background-color: transparent;
+	background-color: $white;
 	border-radius: 0;
-	border: 1px solid $black;
+	border: 1px solid transparent;
 	color: $black;
-	font-family: $header-font-stack;
-	font-size: 18px;
-	font-weight: 500;
-	line-height: 1.77em;
+	font-family: $font-stack;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.7;
 	margin-bottom: 10px;
-	padding: 9px 19px 7px !important;
+	padding: 0.75rem 0.8rem 0.4rem !important;
+	transition: all 300ms ease;
 	// transition: all 200ms ease;
 	&:focus, &:active {
 		border-color: $highlight;
 	}
-	@include placeholder($black);
+	@include placeholder($black, '0.8');
 }
+%pretty-input:not([type="checkbox"]) { width: 100%; }
+%pretty-input[type="checkbox"] { cursor: pointer; }
 %pretty-acf-form {
-	@include centerflex(row, wrap, space-between, flex-start);
+	.acf-fields { @include centerflex(row, wrap, space-between, flex-start); }
 	.acf-field {
 		border: none;
 		padding: 0;
@@ -105,36 +116,9 @@ $breakpoints: (
 		input, textarea { @extend %pretty-input; }
 	}
 }
-/* Centered Text / Img on one side, text on other */
-.et_pb_row.centered-text {
-	display: flex;
-	.et_pb_column {
-		display: flex; 
-		flex-flow: column nowrap;
-		float: none;
-		justify-content: center;
-		.et_pb_module {
-			margin: 0 auto 30px;
-			max-width: 550px;
-			width: 70%;
-			&:first-child { margin-top: 90px; }
-			&:last-child { margin-bottom: 90px; }
-		}
-	}
-}
-/* Testimonial-Slider */
-$testimonial-font-sizes: (
-	null: 30px,
-	large: 23px,
-	medium: 19px,
-	between: 17px,
-	small: 16px
-);
-$author-font-sizes: (
-	null: 16px,
-	between: 15px,
-	small: 14px
-);
+/* #endregion */
+/* #endregion */
+/* #region Testimonial Slider */
 %testimonial-slider {
 	.et_pb_slide {
 		.et_pb_slider_container_inner {
@@ -152,12 +136,12 @@ $author-font-sizes: (
 				text-align: center;
 				width: 80%;
 				.et_pb_slide_content {
-					@include font-size($testimonial-font-sizes);
+					font-size: 2rem;
 					font-family: 'Lusitana';
 					line-height: 1.7em;
 					color: $black;
 					.testimonial-author {
-						@include font-size($author-font-sizes);
+						font-size: 1rem;
 						font-family: $font-stack;
 						font-weight: 700;
 						line-height: 1.4em;
@@ -192,10 +176,174 @@ $author-font-sizes: (
 		width: 15px;
 	}
 }
+/* #endregion */
+/* #region Blog-Feed (Grid) */
+%blog-design-grid {
+	> .et_pb_ajax_pagination_container {
+		@include centerflex(row, wrap, space-between, stretch);
+		> article {
+			width: 29.6667%;
+		}
+		> div { 
+			order: 100;
+			width: 100%;
+		}
+		&::after {
+			content: "";
+			height: 0;
+			order: 90;
+			width: 30%;
+		}
+	}
+}
+/* #endregion */
+/* #region Lists with colored bullet points */
+%highlight-list {
+	list-style: none;
+	li {
+		margin-bottom: 1rem;
+		position: relative;
+		&::before {
+			background-color: $highlight;
+			border-radius: 50%;
+			content: "";
+			height: .4rem;
+			left: -1rem;
+			position: absolute;
+			width: .4rem;
+			margin-top: 7.5px;
+		}
+	}
+}
 
-/* Cookie Notice */
+/* #endregion */
+/* #region Fix Divi Comments */
+.commentlist {
+	margin-top: 1rem;
+	.comment-body {
+		padding-right: 0;
+		.comment_avatar {
+			top: 0;
+			img { border-radius: 50%; }
+		}
+		.comment_area {
+			.reply-container {
+				display: block;
+				text-align: right;
+			}
+			.comment-reply-link {
+				position: relative;
+				top: 1rem;
+				&::after {
+					font-size: 20px;
+				}
+			}
+		}
+	}
+	.comment {
+		.children {
+			margin-left: 2rem;
+		}
+	}
+}
+/* #region max-width 767px */
+@media only screen and (max-width: 767px) {
+	.commentlist {
+		.comment {
+			.children {
+				margin-left: 1rem;
+			}
+		}
+		article.comment-body {
+			align-items: stretch;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-between;
+			margin-bottom: 70px;
+			padding-left: 0;
+		}
+		.comment_avatar {
+			align-items: center;
+			display: flex;
+			position: relative;
+			width: 17%;
+			img {
+				max-width: 100%;
+				width: 100%;
+			}
+		}
+		.comment_postinfo {
+			align-items: flex-start;
+			display: flex;
+			flex-flow: column;
+			justify-content: center;
+			line-height: 1.1;
+			margin: 0 0 3px;
+			row-gap: 5px;
+			width: 77%;
+		}
+		.comment_area {
+			margin-top: 5px;
+			width: 100%;
+		}
+	}
+}
+/* #endregion */
+/* #endregion */
+/* #region Centered Page Navi */
+%pagenavi {
+	align-items: center;
+	border-top: none;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	text-align: center;
+	> a, > span {
+		margin: 0 10px;
+	}
+	> a.page, span.current {
+		align-items: center;
+		background-color: transparent;
+		border-radius: 50%;
+		color: $black !important;
+		display: flex;
+		font-family: $font-stack;
+		font-size: 24px !important;
+		height: 35px;
+		justify-content: center;
+		min-width: 35px;
+		text-align: center;
+	}
+	> a {
+		font-weight: 700;
+	}
+	span.current {
+		background-color: $highlight;
+	}
+	.next-page, .prev-page {
+		display: flex;
+		margin: 0;
+		&::before {
+			// background: url("/wp-content/uploads/2021/09/Pfeil-links.svg");
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+			content: "E";
+			display: inline-block;
+			font-family: 'ETModules';
+			width: 2.2rem;
+			height: 2rem;
+		}
+	}
+	.next-page {
+		transform: scale(-1, -1);
+	}
+}
+/* #endregion */
+/* #region Cookie Notice */
 #cookie-notice #cn-close-notice { display: none; }
-
+/* #endregion */
+/* #region Footer */
 /* Footer with non-floating widgets */
 %mrkz_forever_lul {
 	#footer-widgets {
@@ -204,22 +352,28 @@ $author-font-sizes: (
 			float: none;
 			.et_pb_widget {
 				float: none;
+				position: relative;
 				width: 100%;
 			}
 		}
 	}
 }
-
+/* #endregion */
+/* #region Nav Fixes */
 #page-container, #page-container #et-boc {
 	#top-menu-nav>ul>li>a:hover, .bottom-nav a:hover, #footer-bottom .et-social-icon a:hover, .et_mobile_menu li a:hover, .nav ul li a:hover, footer#main-footer #footer-info a:hover, .et-menu a:hover { 
 		opacity: 1; 
 	}
 }
-
-@media only screen and ( min-width: 981px ) {
+/* #endregion */
+/* #region Responsive Design */
+/* #region min-width 981px */
+@media only screen and (min-width: 981px) {
 	.et_pb_top_divider .et_pb_row.centered-text .et_pb_column .et_pb_module:first-child { margin-top: 100px; }
 }
-@media only screen and ( max-width: 980px ) {
+/* #endregion */
+/* #region max-width 980px */
+@media only screen and (max-width: 980px) {
 	.et_fixed_nav {
 		header#main-header {
 			left: 0;
@@ -237,13 +391,23 @@ $author-font-sizes: (
 			.et_pb_column:last-child { margin-bottom: 0; }
 		}
 	}
-	.et_pb_row.centered-text {
+	%centered-text {
 		flex-flow: column nowrap;
 		.et_pb_column {
 			&.et_pb_column_empty { min-height: 440px; }
 			.et_pb_module { width: 80%; }
 		}
 	}
+	/* #region Pimp my mobile Menu Icon */
+	.mobile_menu_bar::before {
+		display: block;
+		transition: all .4s ease;
+	}
+	.mobile_nav.opened .mobile_menu_bar::before {
+		content: "M";
+		transform: rotate(90deg);
+	}
+	/* #endregion */
 	/* fullwidth mobile nav menu aka gooder menu */
 	%fullwidth-mobile-nav {
 		> .container { 
@@ -278,10 +442,26 @@ $author-font-sizes: (
 		}
 			.et-pb-arrow-prev, .et-pb-arrow-next { display: none; }
 	}
+	%blog-design-grid {
+		> .et_pb_ajax_pagination_container {
+			> article { width: 47.5%; }
+		}
+	}
 }
-@media only screen and ( max-width: 600px ) {
+/* #endregion */
+/* #region max-width 600px */
+@media only screen and (max-width: 600px) {
 	body.et_fixed_nav.logged-in header#main-header.et-fixed-header { top: 0 !important; }
+	%blog-design-grid {
+		> .et_pb_ajax_pagination_container {
+			> article { width: 100%; }
+		}
+	}
 }
-@media only screen and ( max-width: 479px ) {
-	.container, .et_pb_row, .et_pb_row.centered-text .et_pb_column .et_pb_module { width: 90%; }
+/* #endregion */
+/* #region max-width 479px */
+@media only screen and (max-width: 479px) {
+	.container, .et_pb_row, .et_pb_row.centered-text .et_pb_column .et_pb_module, .et_pb_fullscreen .et_pb_fullwidth_header_container { width: 90%; }
 }
+/* #endregion */
+/* #endregion */
